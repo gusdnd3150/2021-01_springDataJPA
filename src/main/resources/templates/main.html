@@ -2,186 +2,188 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 
+<link rel="stylesheet"
+	href="http://fonts.googleapis.com/earlyaccess/notosanskr.css">
+
+<style type="text/css">
+
+body{
+ font-family: 'Noto Sans KR', sans-serif; 
+}
+
+</style>
 
 <meta charset="UTF-8">
 <title>메인 페이지</title>
 </head>
-<body>
-
+<body style="background-image: url('/images/background.png');background-position: center;">
 	<!-- 해더 -->
 	<div th:replace="/communalHtml/header :: header"></div>
 
-
-	<div class="container">
-		  
+	<br>
+	<!-- 업무보고 영역 -->
+	<div class="container"
+		style="background-color: #e9e9e9; border-radius: 15px; padding: 1%;">
+		<h6><span th:text="${#calendars.format(#calendars.createNow(),'yyyy-MM-dd')}"></span> &nbsp;&nbsp; 업무보고 최신  <span style="float:right"><button class="btn-info">More</button></span> </h6>
+		<hr>
 		<div class="row">
-			<div class="col-sm-2" style="border-style: groove">
-				<!-- 사이드 -->
-				<th:block th:replace="/communalHtml/side :: sidevar"></th:block>
-			</div>
 			
-			<!-- 바디영역 -->
-			<div class="col-sm-10" style="border-style: groove">
-
-				<div class="container">
-					<div class="row">
-						<table class="table">
-							<tr>
-								<th></th>
-								<th>아이디</th>
-								<th>이름</th>
-								<th>이메일</th>
-								<th></th>
-							</tr>
-							<tr th:each="user:${userList}">
-								<td></td>
-								<td th:text="${user.id}"></td>
-								<td><a href="#" th:onclick="|selectBoard('${user.id}')|"
-									th:text="${user.name}"></a></td>
-								<td th:text="${user.email}"></td>
-								<th><input type="button" value="삭제"
-									th:onclick="|deleteBoard('${user.id}')|"></th>
-							</tr>
-						</table>
+			<!-- 가져온놈들 반복 -->
+			<div th:each="list :${userList}" class="col-lg-4">
+				<div class="card"
+					style="  padding: 2%; border-radius: 20px; background-color: white">
+					<div class="card-body">
+						<h6 th:text="${list.name}" class="card-title"></h6>
+						<!-- <h6 th:text="${list.id}" class="card-subtitle mb-2 text-muted"></h6> -->
+						<!-- <p th:text="${list.content}" class="card-text"></p> -->
+						<a th:href="@{/detail(id=${list.id})}" class="card-link"><h8>상세보기</h8></a>
 					</div>
 				</div>
-				    
 			</div>
-			 
-			<!--  <div class="col-sm-6" style="border-style:groove">
-          <p>insert 테스트</p>
-       <form action="insertBoard" method="post" name="writeForm" id="writeForm">
-           <input type="text" name="name">
-           <input type="text" name="email">
-           <input type="text" name="password">
-           <input type="button" onclick="checkForm(event);" value="등록">
-       </form>
-    </div>
+		</div>
+		
+		<!-- 페이징 -->
+		<div align="center" th:with="start=${(userList.number/maxPage)*maxPage + 1},
+                             end=(${(userList.totalPages == 0) ? 1 : (start + (maxPage - 1) < userList.totalPages ? start + (maxPage - 1) : userList.totalPages)})">
+		           <ul class="pagination" style="    margin: 0px;">
+						<li th:if="${start > 1}"><a
+							th:href="@{/main.do?(page=${start - maxPage})}" th:text="'<'"></a>
+						</li>
 
-   <div class="col-sm-6" style="border-style:groove">
-          <p>update 테스트</p>
-         <form action="updateBoard" method="post" name="updateForm" id="updateForm">
-           <input type="hidden" name="id">
-           <input type="text" name="name">
-           <input type="text" name="email">
-           <input type="text" name="password">
-           <input type="button" onclick="checkUpdateForm(event);" value="수정">
-       </form>
-    </div> -->
-
-
-			  
+						<li th:each="page: ${#numbers.sequence(start, end)}">
+						<a th:if="${userList.totalPages != 0}" th:href="@{/main.do?(page=${page-1})}" th:text="."></a></li>
+							
+						<li th:if="${end < userList.totalPages}"><a
+							th:href="@{/main.do?(page=${start + maxPage} -1)}" th:text="'>'"></a>
+						</li>
+					</ul>
+		           
 		</div>
 	</div>
+	
+	<br>
+	<br>
+	<div class="container"
+		style="background-color: #e9e9e9; border-radius: 15px; padding: 2%;">
+		<h6> 공지 </h6>
+		<hr>
+		<div class="row">
+		  <div class="col-lg-12"></div>
+		
+		</div>
+		</div>
 
 </body>
 
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
-function checkForm(event){
-	event.preventDefault();
-	var form = document.writeForm;
-	var title = form.name.value;
-	var writer = form.email.value;
-	var content = form.password.value;
-	
-	if(title==null || title==""){
-		alert("제목은 필수입니다.");
-		return;
-	}else if(writer==null || writer==""){
-		alert("이름은 필수입니다.");
-		return;
-	}else if (content==null || content==""){
-		alert("내용은 필수입니다.");
+	function checkForm(event) {
+		event.preventDefault();
+		var form = document.writeForm;
+		var title = form.name.value;
+		var writer = form.email.value;
+		var content = form.password.value;
+
+		if (title == null || title == "") {
+			alert("제목은 필수입니다.");
+			return;
+		} else if (writer == null || writer == "") {
+			alert("이름은 필수입니다.");
+			return;
+		} else if (content == null || content == "") {
+			alert("내용은 필수입니다.");
+			return;
+		}
+
+		var params = $("#writeForm").serialize(); // serialize() : 입력된 모든Element(을)를 문자열의 데이터에 serialize 한다.
+		$.ajax({
+			url : 'insertBoard',
+			type : 'POST',
+			data : params,
+			contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+			dataType : 'text',
+			success : function(data) {
+				if (data == 'success') {
+					alert("등록 되었습니다.");
+					location.href = "/main.do";
+				} else {
+					alert("등록실패");
+				}
+			}
+		});
 		return;
 	}
 
-	var params = $("#writeForm").serialize(); // serialize() : 입력된 모든Element(을)를 문자열의 데이터에 serialize 한다.
-	    $.ajax({
-	        url: 'insertBoard',
-	        type: 'POST',
-	        data:params,
-	        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
-	        dataType: 'text',
-	        success: function (data) {
-		          if(data=='success'){
-		        	  alert("등록 되었습니다.");
-		        	  location.href="/main.do";
-		          }else{
-		        	  alert("등록실패");
-		          }
-	        }
-	    });
-	return;
+	function deleteBoard(id) {
+		$.ajax({
+			url : 'deleteBoard',
+			type : 'post',
+			data : {
+				id : id
+			},
+			contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+			dataType : 'text',
+			success : function(data) {
+				if (data == 'success') {
+					alert("삭제완료");
+					location.href = "/main.do";
+				} else {
+					alert("등록실패");
+				}
+			}
+		});
+		return;
 	}
-	
-	
-	function deleteBoard(id){
-		    $.ajax({
-			        url: 'deleteBoard',
-			        type: 'post',
-			        data:{id:id},
-			        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
-			        dataType: 'text',
-			        success: function (data) {
-				          if(data=='success'){
-				        	  alert("삭제완료");
-				        	  location.href="/main.do";
-				          }else{
-				        	  alert("등록실패");
-				          }
-			        }
-			    });
-			return;
+
+	function selectBoard(id) {
+		$.ajax({
+			url : 'selectBoard',
+			type : 'get',
+			data : {
+				id : id
+			},
+			contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+			dataType : 'json',
+			success : function(data) {
+				console.log(data);
+				var updateForm = document.updateForm;
+				updateForm.email.value = data.email;
+				updateForm.id.value = data.id;
+				updateForm.name.value = data.name;
+				updateForm.password.value = data.password;
+			}
+		});
+		return;
 	}
-	
-	function selectBoard(id){
-		    $.ajax({
-			        url: 'selectBoard',
-			        type: 'get',
-			        data:{id:id},
-			        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
-			        dataType: 'json',
-			        success: function (data) {
-				          console.log(data);
-				          var updateForm = document.updateForm;
-				          updateForm.email.value = data.email;
-				          updateForm.id.value = data.id;
-				          updateForm.name.value = data.name;
-				          updateForm.password.value = data.password;
-			        }
-			    });
-			return;
-	}
-	
-	function checkUpdateForm(event){
+
+	function checkUpdateForm(event) {
 		event.preventDefault();
 
-		var params = $("#updateForm").serialize(); 
-		    $.ajax({
-		        url: 'updateBoard',
-		        type: 'put',
-		        data:params,
-		        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
-		        dataType: 'text',
-		        success: function (data) {
-			          if(data=='success'){
-			        	  alert("수정완료.");
-			        	  location.href="/main.do";
-			          }else{
-			        	  alert("실패");
-			        	  return;
-			          }
-		        }
-		    });
-		}
-	
-	
-	
+		var params = $("#updateForm").serialize();
+		$.ajax({
+			url : 'updateBoard',
+			type : 'put',
+			data : params,
+			contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+			dataType : 'text',
+			success : function(data) {
+				if (data == 'success') {
+					alert("수정완료.");
+					location.href = "/main.do";
+				} else {
+					alert("실패");
+					return;
+				}
+			}
+		});
+	}
 </script>
 
 </html>
