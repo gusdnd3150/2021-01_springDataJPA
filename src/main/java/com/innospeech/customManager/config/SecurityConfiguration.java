@@ -23,7 +23,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 			.antMatchers("/").permitAll()
 			.antMatchers("/h2-console/**").permitAll()
 			.and()
-			.csrf().ignoringAntMatchers("/h2-console/**");
+			.csrf().ignoringAntMatchers("/h2-console/**", "/");
 		
 		
 		 http.csrf().disable(); 

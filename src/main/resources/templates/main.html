@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+
+<meta charset="UTF-8">
+<title>메인 페이지</title>
+</head>
+<body>
+
+	<!-- 해더 -->
+	<div th:replace="/communalHtml/header :: header"></div>
+
+
+	<div class="container">
+		  
+		<div class="row">
+			<div class="col-sm-2" style="border-style: groove">
+				<!-- 사이드 -->
+				<th:block th:replace="/communalHtml/side :: sidevar"></th:block>
+			</div>
+			
+			<!-- 바디영역 -->
+			<div class="col-sm-10" style="border-style: groove">
+
+				<div class="container">
+					<div class="row">
+						<table class="table">
+							<tr>
+								<th></th>
+								<th>아이디</th>
+								<th>이름</th>
+								<th>이메일</th>
+								<th></th>
+							</tr>
+							<tr th:each="user:${userList}">
+								<td></td>
+								<td th:text="${user.id}"></td>
+								<td><a href="#" th:onclick="|selectBoard('${user.id}')|"
+									th:text="${user.name}"></a></td>
+								<td th:text="${user.email}"></td>
+								<th><input type="button" value="삭제"
+									th:onclick="|deleteBoard('${user.id}')|"></th>
+							</tr>
+						</table>
+					</div>
+				</div>
+				    
+			</div>
+			 
+			<!--  <div class="col-sm-6" style="border-style:groove">
+          <p>insert 테스트</p>
+       <form action="insertBoard" method="post" name="writeForm" id="writeForm">
+           <input type="text" name="name">
+           <input type="text" name="email">
+           <input type="text" name="password">
+           <input type="button" onclick="checkForm(event);" value="등록">
+       </form>
+    </div>
+
+   <div class="col-sm-6" style="border-style:groove">
+          <p>update 테스트</p>
+         <form action="updateBoard" method="post" name="updateForm" id="updateForm">
+           <input type="hidden" name="id">
+           <input type="text" name="name">
+           <input type="text" name="email">
+           <input type="text" name="password">
+           <input type="button" onclick="checkUpdateForm(event);" value="수정">
+       </form>
+    </div> -->
+
+
+			  
+		</div>
+	</div>
+
+</body>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+function checkForm(event){
+	event.preventDefault();
+	var form = document.writeForm;
+	var title = form.name.value;
+	var writer = form.email.value;
+	var content = form.password.value;
+	
+	if(title==null || title==""){
+		alert("제목은 필수입니다.");
+		return;
+	}else if(writer==null || writer==""){
+		alert("이름은 필수입니다.");
+		return;
+	}else if (content==null || content==""){
+		alert("내용은 필수입니다.");
+		return;
+	}
+
+	var params = $("#writeForm").serialize(); // serialize() : 입력된 모든Element(을)를 문자열의 데이터에 serialize 한다.
+	    $.ajax({
+	        url: 'insertBoard',
+	        type: 'POST',
+	        data:params,
+	        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
+	        dataType: 'text',
+	        success: function (data) {
+		          if(data=='success'){
+		        	  alert("등록 되었습니다.");
+		        	  location.href="/main.do";
+		          }else{
+		        	  alert("등록실패");
+		          }
+	        }
+	    });
+	return;
+	}
+	
+	
+	function deleteBoard(id){
+		    $.ajax({
+			        url: 'deleteBoard',
+			        type: 'post',
+			        data:{id:id},
+			        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
+			        dataType: 'text',
+			        success: function (data) {
+				          if(data=='success'){
+				        	  alert("삭제완료");
+				        	  location.href="/main.do";
+				          }else{
+				        	  alert("등록실패");
+				          }
+			        }
+			    });
+			return;
+	}
+	
+	function selectBoard(id){
+		    $.ajax({
+			        url: 'selectBoard',
+			        type: 'get',
+			        data:{id:id},
+			        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
+			        dataType: 'json',
+			        success: function (data) {
+				          console.log(data);
+				          var updateForm = document.updateForm;
+				          updateForm.email.value = data.email;
+				          updateForm.id.value = data.id;
+				          updateForm.name.value = data.name;
+				          updateForm.password.value = data.password;
+			        }
+			    });
+			return;
+	}
+	
+	function checkUpdateForm(event){
+		event.preventDefault();
+
+		var params = $("#updateForm").serialize(); 
+		    $.ajax({
+		        url: 'updateBoard',
+		        type: 'put',
+		        data:params,
+		        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
+		        dataType: 'text',
+		        success: function (data) {
+			          if(data=='success'){
+			        	  alert("수정완료.");
+			        	  location.href="/main.do";
+			          }else{
+			        	  alert("실패");
+			        	  return;
+			          }
+		        }
+		    });
+		}
+	
+	
+	
+</script>
+
+</html>
