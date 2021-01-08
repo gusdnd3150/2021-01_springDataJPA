@@ -36,6 +36,7 @@ public class UserController {
 	 * @PutMapping
 	 */
 	
+	/*
 	@GetMapping("/main.do")
 	public String view(Model model,
 			@RequestParam(value="page",defaultValue="0") int page,
@@ -45,9 +46,9 @@ public class UserController {
 		model.addAttribute("userList", list);
 		model.addAttribute("maxPage", 2);
 		return "main";
-	}
+	}*/
 	
-	
+/*	
 	@PostMapping("/insertBoard")
 	@ResponseBody
 	public String insert(Model model,Users user) {
@@ -61,7 +62,7 @@ public class UserController {
 		}
 		return result;
 	}
-	
+	*/
 	@PostMapping("/deleteBoard")
 	@ResponseBody
 	public String delete(Users user) {

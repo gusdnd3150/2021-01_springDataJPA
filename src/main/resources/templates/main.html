@@ -2,28 +2,12 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
 
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-
-<link rel="stylesheet"
-	href="http://fonts.googleapis.com/earlyaccess/notosanskr.css">
-
-<style type="text/css">
-
-body{
- font-family: 'Noto Sans KR', sans-serif; 
-}
-
-</style>
+<th:block th:replace="communalHtml/header :: cssheader"></th:block>
 
 <meta charset="UTF-8">
 <title>메인 페이지</title>
 </head>
-<body style="background-image: url('/images/background.png');background-position: center;">
+<body>
 	<!-- 해더 -->
 	<div th:replace="/communalHtml/header :: header"></div>
 
@@ -36,31 +20,31 @@ body{
 		<div class="row">
 			
 			<!-- 가져온놈들 반복 -->
-			<div th:each="list :${userList}" class="col-lg-4">
+		<div th:each="list :${reportList}" class="col-lg-4">
 				<div class="card"
 					style="  padding: 2%; border-radius: 20px; background-color: white">
 					<div class="card-body">
-						<h6 th:text="${list.name}" class="card-title"></h6>
-						<!-- <h6 th:text="${list.id}" class="card-subtitle mb-2 text-muted"></h6> -->
-						<!-- <p th:text="${list.content}" class="card-text"></p> -->
-						<a th:href="@{/detail(id=${list.id})}" class="card-link"><h8>상세보기</h8></a>
+						<h6 th:text="${list.title}" class="card-title"></h6>
+						 <h6 th:text="${list.user.id}" class="card-subtitle mb-2 text-muted"></h6> 
+						 <p th:text="${list.content}" class="card-text"></p> 
+						<a th:href="@{/detail(id=${list.boardnum})}" class="card-link"><h8>상세보기</h8></a>
 					</div>
 				</div>
-			</div>
+			</div> 
 		</div>
 		
 		<!-- 페이징 -->
-		<div align="center" th:with="start=${(userList.number/maxPage)*maxPage + 1},
-                             end=(${(userList.totalPages == 0) ? 1 : (start + (maxPage - 1) < userList.totalPages ? start + (maxPage - 1) : userList.totalPages)})">
+		<div align="center" th:with="start=${(reportList.number/maxPage)*maxPage + 1},
+                             end=(${(reportList.totalPages == 0) ? 1 : (start + (maxPage - 1) < reportList.totalPages ? start + (maxPage - 1) : reportList.totalPages)})">
 		           <ul class="pagination" style="    margin: 0px;">
 						<li th:if="${start > 1}"><a
 							th:href="@{/main.do?(page=${start - maxPage})}" th:text="'<'"></a>
 						</li>
 
 						<li th:each="page: ${#numbers.sequence(start, end)}">
-						<a th:if="${userList.totalPages != 0}" th:href="@{/main.do?(page=${page-1})}" th:text="."></a></li>
+						<a th:if="${reportList.totalPages != 0}" th:href="@{/main.do?(page=${page-1})}" th:text="."></a></li>
 							
-						<li th:if="${end < userList.totalPages}"><a
+						<li th:if="${end < reportList.totalPages}"><a
 							th:href="@{/main.do?(page=${start + maxPage} -1)}" th:text="'>'"></a>
 						</li>
 					</ul>

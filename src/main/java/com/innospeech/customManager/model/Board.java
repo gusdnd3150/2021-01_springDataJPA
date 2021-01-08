@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.Data;
 import lombok.Getter;
@@ -30,10 +32,14 @@ public class Board {
 	private String content;
 	
 	@Column
+	@Temporal(TemporalType.DATE)
 	private Date updateday;
 	
+	@Column(name="BOARD_TYPE")
+	private String boardtype;
+	
 	@ManyToOne
-    @JoinColumn(name="id")
+    @JoinColumn(name="ID")
     private Users user;
 	
 	

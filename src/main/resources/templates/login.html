@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+
+<th:block th:replace="communalHtml/header :: cssheader"></th:block>
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+
+	<!-- 해더 -->
+	<div th:replace="/communalHtml/header :: header"></div>
+
+
+<div class="container">
+  <div class="row" align="center" style="padding-top: 5%; padding-left: 15%; padding-right: 15%;">
+  <img src="/images/innospeechLogo.png" width="220px" >
+    <h2>LOGIN</h2>
+    <div class="col-sm-12" style="background-color:yellow;border-radius:25px;    padding-top: 7%;    padding-bottom: 7%;" >
+              <form name="loginForm" id="loginForm">
+                         <div class="mb-3">
+							<label class="form-label">email</label> 
+							<input type="text" class="form-control" style="width:57%" name="email">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">password</label> 
+							<input type="text" class="form-control" style="width:57%" name="password">
+						</div>
+						<div >
+						  <p id="checkResult" style="color:red"></p>
+						</div>
+						
+						<br>
+                        <div>
+                          <button type="button" onclick="login()" class="btn btn-primary">login</button>
+                        </div>
+              </form>
+    </div>
+  </div>
+</div>
+
+
+</body>
+
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+
+function login(){
+	
+	var checkResult = document.getElementById("checkResult");
+	var params = $("#loginForm").serialize();
+	    $.ajax({
+	        url: 'userLogin',
+	        type: 'POST',
+	        data:params,
+	        contentType: 'application/x-www-form-urlencoded; charset=UTF-8', 
+	        dataType: 'text',
+	        success: function (data) {
+		          if(data=='success'){
+		        	  alert("로그인완료.");
+		        	  location.href="/main.do";
+		          }else if(data=='userNull'){
+		        	  checkResult.innerHTML="존재하지 않는 계정";
+		          }else{
+		        	  checkResult.innerHTML="비밀번호 불일치";
+		          }
+	        }
+	    });
+	
+}
+
+
+</script>
+
+</html>

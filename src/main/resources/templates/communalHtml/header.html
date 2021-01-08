@@ -2,10 +2,19 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
 
+
+<th:block th:fragment="cssheader">
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+<style type="text/css">
+body{
+ font-family: 'Noto Sans KR', sans-serif; 
+}
+</style>
 
+</th:block>
 
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -17,11 +26,14 @@
   <a href="/main.do"><img src="/images/innospeechLogo.png" width="130px"></a>
   <ul class="nav nav-tabs" role="tablist">
     <li><a href="#">workPlace</a></li>
-    <li><a href="#">report</a></li>
+    <li><a href="/report">report</a></li>
     <li><a href="#">issue</a></li>
-    <li style="float:right"><a href="#">Login</a></li>        
+    <li th:if="${session.LOGIN==null}" style="float:right"><a href="/login">Login</a></li>        
+    <li th:if="${session.LOGIN!=null}" style="float:right"><a href="/logOut">Logout</a></li>
   </ul>
 </div>
+
+
 </header>
 
 </body>

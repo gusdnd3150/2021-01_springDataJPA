@@ -6,6 +6,6 @@ CREATE TABLE USERS(
 	
 	primary key (id)
 
-)
+);
 
-
+insert into users values(1, 'gusdnd3150@gmail.com','woong','123');

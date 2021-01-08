@@ -1,6 +1,8 @@
 package com.innospeech.customManager.model;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.Column;
 
@@ -20,7 +22,7 @@ import lombok.ToString;
 @ToString(exclude ="users")
 @Data
 public class Users {
-	
+	 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
@@ -31,8 +33,8 @@ public class Users {
 	@Column
 	private String password;
 	
-	@OneToMany(mappedBy = "users")
-    private Collection<Board> board;
+	@OneToMany(mappedBy = "user")
+    private List<Board> board = new ArrayList<Board>();
 	
 	
 }
