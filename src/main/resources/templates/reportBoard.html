@@ -4,13 +4,24 @@
 
 <th:block th:replace="communalHtml/header :: cssheader"></th:block>
 
+
+
 <meta charset="UTF-8">
+
+
+<style type="text/css">
+fieldset {  position: relative;  display: inline-block;  padding: 0 0 0px;  border: none;  border-radius: 5px; } 
+#searchButton,#search2{
+ position: relative;  width: 150px;  height: 24px;  padding: 0;  display: inline-block; float: left;
+}
+#searchButton{
+  width:20px
+}
+</style>
+
 <title>업무보고 게시판</title>
 </head>
 <body>
-
-
-
 
 <!-- 해더 -->
 	<div th:replace="/communalHtml/header :: header"></div>
@@ -29,7 +40,7 @@
 			       <th>작성일</th>
 			       <th>분류</th>
 			      </tr>
-			        <tr th:if="${reportList} != null"><td colspan="5" align="center">게시글 없습니다</td></tr>
+			        <tr th:if="${reportList}==null"><td colspan="5" align="center">게시글 없습니다</td></tr>
 			         <tr th:each="list : ${reportList}">
 			             <td th:text="${list.boardnum}"></td>
 			            <td th:text="${list.title}"></td>
@@ -38,6 +49,38 @@
 			            <td th:text="${list.boardtype}"></td>
 			         </tr>
                </table>
+                    <div class="page-num" align="center"
+					th:with="start=${(reportList.number/maxPage)*maxPage + 1},
+                             end=(${(reportList.totalPages == 0) ? 1 : (start + (maxPage - 1) < reportList.totalPages ? start + (maxPage - 1) : reportList.totalPages)})">
+					<ul class="pagination">
+						<li th:if="${start > 1}"><a th:href="@{/report?(page=0)}"
+							th:text="'<<'"></a></li>
+						<li th:if="${start > 1}"><a
+							th:href="@{/report?(page=${start - maxPage})}" th:text="'<'"></a>
+						</li>
+
+						<li th:each="page: ${#numbers.sequence(start, end)}"><a
+							th:href="@{/report?(page=${page-1})}" th:text="${page}"></a></li>
+						<li th:if="${end < reportList.totalPages}"><a
+							th:href="@{/report?(page=${start + maxPage} -1)}" th:text="'>'"></a>
+						</li>
+						<li th:if="${end < reportList.totalPages}"><a
+							th:href="@{/report?(page=${reportList.totalPages-1})}"
+							th:text="'>>'"></a></li>
+					</ul>
+				    </div>
+
+                      <form action="/searchBoard" method="get">
+                         <div class="mb-3" align="center" >
+                         <fieldset style="background-color:none">
+                      <input id="search2" type="text" class="form-control" name="seacrContent" />
+                      <button id="searchButton" type="submit">
+                      <i class="fa fa-search"></i></button>
+                      </fieldset>
+						</div>
+                      </form>
+                      
+                       
 			</div>
 		</div>
 	</div>
@@ -57,7 +100,9 @@
             
           <form action="" name="writeForm" id="writeForm">
                 <input type="hidden" name="id" th:if="${session.LOGIN}!=null" th:value="${session.LOGIN.id}">
-                <input type="hidden" name="id" th:if="${session.LOGIN}==null" value="empty">  
+                <input type="hidden" name="id" th:if="${session.LOGIN}==null" value="empty">
+                <input type="hidden" name="updateday" th:value="${#calendars.format(#calendars.createNow(),'yyyy-mm-dd')}"> 
+                
 						<div class="mb-3">
 							<label class="form-label">제목</label> 
 							<input type="text" class="form-control" name="title">
@@ -71,7 +116,7 @@
 						</div>
 						<div class="mb-3">
 							<label  class="form-label">내용</label>
-							<textarea class="form-control"  rows="3" name="content"></textarea>
+							<textarea class="form-control" id="modeEditor"  rows="3" name="content"></textarea>
 						</div>
 				</form>
 
@@ -89,13 +134,33 @@
 
 
 </body>
+
+<script src="/ck/ckeditor/ckeditor.js"></script>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
+
+
+var editor;
+window.onload = function() {
+	editor =CKEDITOR.replace('modeEditor',{
+    	language:'ko',
+    	height:'600px',
+    	removePlugins: 'elementspath',
+    	       resize_enabled: false
+    });
+};
+
+
+
+
+
 	function checkForm(event) {
 		event.preventDefault();
 		
 		var form = document.writeForm;
 		var title = form.title.value;
-		var content = form.content.value;
+		var content = CKEDITOR.instances.modeEditor.getData(); // ck에디터 값
+		var boardtype= form.boardtype.value;
 		var id = form.id.value;
 		console.log(id);
 		
@@ -110,11 +175,10 @@
 			return;
 		}
 
-		var params = $("#writeForm").serialize(); // serialize() : 입력된 모든Element(을)를 문자열의 데이터에 serialize 한다.
 		$.ajax({
 			url : 'insertBoard',
 			type : 'POST',
-			data : params,
+			data : {content:content,title:title,id:id,boardtype:boardtype},
 			contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
 			dataType : 'text',
 			success : function(data) {
@@ -128,15 +192,5 @@
 		});
 		return;
 	}
-	
-	
-
 </script>
-
-
-
-
-
-
-
 </html>

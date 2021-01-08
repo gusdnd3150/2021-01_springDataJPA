@@ -13,10 +13,8 @@ import com.innospeech.customManager.model.Users;
 
 @Repository
 public interface UserRepository extends JpaRepository<Users, Integer>{
-	
-	
-	
 	public Users findByEmail(String email);
 	public Page<Users> findAll(Pageable pageable);
+	public Users findById(int id);
 	
 }

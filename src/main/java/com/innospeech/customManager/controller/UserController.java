@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.innospeech.customManager.dto.UserDTO;
 import com.innospeech.customManager.model.Users;
 import com.innospeech.customManager.service.UserService;
 
@@ -30,79 +31,21 @@ public class UserController {
 	@Autowired
 	private UserService service;
 	
-	/*
-	 * @DeleteMapping
-	 * 
-	 * @PutMapping
-	 */
-	
-	/*
-	@GetMapping("/main.do")
-	public String view(Model model,
-			@RequestParam(value="page",defaultValue="0") int page,
-			@RequestParam(value="size",defaultValue="3") int size) {
-		Page<Users> list = service.list(PageRequest.of(page, size));
+
+	//회원가입
+	@PostMapping("userJoin")
+	@ResponseBody
+	public String join(UserDTO dto) {
+		String result ="fail";
 		
-		model.addAttribute("userList", list);
-		model.addAttribute("maxPage", 2);
-		return "main";
-	}*/
-	
-/*	
-	@PostMapping("/insertBoard")
-	@ResponseBody
-	public String insert(Model model,Users user) {
-		String result= "";
-	    try {
-	    	service.save(user);
-	    	result= "success";
-		} catch (Exception e) {
-			e.printStackTrace();
-			result= "fail";
-		}
-		return result;
-	}
-	*/
-	@PostMapping("/deleteBoard")
-	@ResponseBody
-	public String delete(Users user) {
-		String result= "";
-	    try {
-	    	service.delete(user);
-	    	result= "success";
-		} catch (Exception e) {
-			e.printStackTrace();
-			result= "fail";
-		}
-		return result;
-	}
-	
-	
-	@GetMapping("/selectBoard")
-	@ResponseBody
-	public Optional<Users> select(Users user) {
-		Optional<Users> selectUser=null;
 		try {
-			selectUser =service.select(user);
+			result= service.joinUser(dto);
 			
 		} catch (Exception e) {
-		}
-		return selectUser;
-	}
-	
-	@PutMapping("/updateBoard")
-	@ResponseBody
-	public String update(Users user) {
-		log.info(user.toString());
-		
-		String result= "";
-	    try {
-	    	service.save(user);
-	    	result= "success";
-		} catch (Exception e) {
 			e.printStackTrace();
-			result= "fail";
+			result="fail";
 		}
+		
 		return result;
 	}
 }

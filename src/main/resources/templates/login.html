@@ -34,6 +34,7 @@
 						<br>
                         <div>
                           <button type="button" onclick="login()" class="btn btn-primary">login</button>
+                          <button type="button" onclick="" class="btn btn-primary"  data-toggle="modal" data-target="#myModal">회원가입</button>
                         </div>
               </form>
     </div>
@@ -41,6 +42,46 @@
 </div>
 
 
+
+
+
+
+
+ <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">회원가입</h4>
+        </div>
+        <div class="modal-body">
+            
+          <form action="" name="joinForm" id="joinForm">
+						<div class="mb-3">
+							<label class="form-label">이메일</label> 
+							<input type="text" class="form-control" name="email">
+						</div>
+						<div class="mb-3">
+							<label  class="form-label">이름</label>
+							<input type="text" class="form-control" name="name">
+						</div>
+						<div class="mb-3">
+							<label  class="form-label">password</label>
+							<input type="password" class="form-control" name="password">
+						</div>
+				</form>
+
+        </div>
+        <div class="modal-footer">      
+          <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+          <button type="button" class="btn btn-default" onclick="checkForm(event)">가입</button>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <!-- Modal  end-->
 </body>
 
 <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -70,6 +111,51 @@ function login(){
 	
 }
 
+function checkForm(event) {
+	event.preventDefault();
+	
+	var form = document.joinForm;
+	var email = form.email.value;
+	var name = form.name.value;
+	var password = form.password.value;
+	
+	var regex=/^[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[@]{1}[-A-Za-z0-9_]+[-A-Za-z0-9_.]*[.]{1}[A-Za-z]{1,5}$/;
+	
+	console.log(email);
+	if (password=='') {
+		alert("비밀번호 필수");
+		return;
+	}else if (name == null ) {
+		alert("이름 필수");
+		return;
+	}else if(email == null || email == ""){
+		alert("이메일");
+		return;
+	}else if(regex.test(email)==false){
+		alert("이메일 형식이 아니다");
+		return;
+	}
+
+	var params = $("#joinForm").serialize(); // serialize() : 입력된 모든Element(을)를 문자열의 데이터에 serialize 한다.
+	$.ajax({
+		url : 'userJoin',
+		type : 'POST',
+		data : params,
+		contentType : 'application/x-www-form-urlencoded; charset=UTF-8',
+		dataType : 'text',
+		success : function(data) {
+			if (data == 'success') {
+				alert("가입 추카");
+				location.href = "/main.do";
+			} else if(data='alreadyExist') {
+				alert("이미존재하는 이메일");
+			}else{
+				alert("실패");
+			}
+		}
+	});
+	return;
+}
 
 </script>
 

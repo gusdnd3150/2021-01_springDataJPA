@@ -3,7 +3,7 @@ CREATE TABLE BOARD(
 	id INT NOT NULL,
 	title varchar (25) NOT NULL,
 	content varchar (2000) NOT NULL,
-	updateday date DEFAULT NOW(),
+	updateday timestamp DEFAULT NOW(),
 	board_type varchar (25) NOT NULL,
 	
 	primary key (boardnum)

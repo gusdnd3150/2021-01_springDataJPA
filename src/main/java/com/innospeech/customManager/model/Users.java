@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.innospeech.customManager.dto.UserDTO;
 
 import lombok.Data;
 import lombok.Getter;
@@ -37,4 +38,16 @@ public class Users {
     private List<Board> board = new ArrayList<Board>();
 	
 	
+	public Users() {};
+	public Users(int id,String name,String email,String password) {
+		this.id=id;
+		this.name=name;
+		this.email=email;
+		this.password=password;
+	};
+	
+	public static Users createUser(UserDTO dto)  {
+		return new Users(dto.getId(),dto.getName(),dto.getEmail(),dto.getPassword());
+	}
 }
+

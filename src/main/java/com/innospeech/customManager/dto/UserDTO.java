@@ -1,5 +1,7 @@
 package com.innospeech.customManager.dto;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,4 +21,6 @@ public class UserDTO {
 	private String name;
 	private String email;
 	private String password;
+	private Date updateday;
+	
 }

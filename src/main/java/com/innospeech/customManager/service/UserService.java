@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.innospeech.customManager.dto.UserDTO;
@@ -22,6 +23,8 @@ public class UserService {
 	
 	@Autowired
 	private UserRepository repository;
+	@Autowired
+	BCryptPasswordEncoder passwordEncoder;
 	
 	// insert
 	public void save(Users user) {
@@ -38,10 +41,11 @@ public class UserService {
 		repository.deleteById(user.getId());
 	}
 	
-	// 가져오기
-	public Optional<Users> select(Users user) {
-		return repository.findById(user.getId());
-	}
+	
+	// 가져오기 id로
+		public Users findOne(Users user) {
+			return repository.findById(user.getId());
+		}
 	
 	// 가져오기 email로
 	public Users selectbyEmail(UserDTO userDTO) {
@@ -51,16 +55,32 @@ public class UserService {
 	//로그인 체크
 	public String checkPassword(UserDTO userDTO,HttpServletRequest request) {
 		HttpSession session = request.getSession();
+		
 		Users selectUser= repository.findByEmail(userDTO.getEmail());
 		String result="";
 		
 		if(selectUser==null) {
 			result="userNull";	
-		}else if(!selectUser.getPassword().equals(userDTO.getPassword())) { 
+		}else if( selectUser!=null&& !passwordEncoder.matches(userDTO.getPassword(),selectUser.getPassword())) { 
 			result="dismachPassword";	
 		}else {
 			session.setAttribute("LOGIN", selectUser);
 			result="success";
+		}
+		return result;
+	}
+	
+	//회원가입
+	public String joinUser(UserDTO dto) {
+		String result="";
+		
+		Users user = repository.findByEmail(dto.getEmail()); //email로 일단 가져와
+		if(user==null) { // 회원 없으면
+			dto.setPassword(passwordEncoder.encode(dto.getPassword()));
+			repository.save(Users.createUser(dto));
+			result ="success";  
+		}else if(user.getEmail().equals(dto.getEmail())) {
+			result ="alreadyExist";   //아이디 있으니까 다른거해라
 		}
 		return result;
 	}

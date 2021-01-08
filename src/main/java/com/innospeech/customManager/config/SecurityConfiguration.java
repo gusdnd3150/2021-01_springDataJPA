@@ -1,10 +1,12 @@
 package com.innospeech.customManager.config;
 
 import org.aspectj.weaver.ast.And;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
@@ -28,7 +30,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter{
 		
 		 http.csrf().disable(); 
 		 http.headers().frameOptions().disable();
-		 	
-
 	}
+	
+	
+	@Bean      //암호화 설정
+	public BCryptPasswordEncoder passwordEncoder() {
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        return bCryptPasswordEncoder;
+    }
 }
