@@ -45,5 +45,25 @@ public class BoardSpecification {
             }
         };   // return값은 Predicate 타입이다
     }
+	public static Specification<Board> findByFirstNmLastNmEmail(String firstNm, String lastNm, String email) {
+        return new Specification<Board>() {
+            @Override
+            public Predicate toPredicate(Root<Board> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
+                Predicate firstNmPredicate = null;
+                 Predicate lastNmPredicate = null;
+                 Predicate emailPredicate = null;
 
+                if (!StringUtils.isEmpty(firstNm)) {
+                    firstNmPredicate = cb.like(root.get(""),  "%" +"keword"+ "%");
+                }
+                if (!StringUtils.isEmpty(lastNm)) {
+                    lastNmPredicate = cb.like(root.get(""),  "%" +"keword"+ "%");
+                }
+                if (!StringUtils.isEmpty(email)) {
+                    emailPredicate = cb.like(root.get(""),  "%" +"keword"+ "%");
+                }
+                return cb.and(firstNmPredicate, lastNmPredicate, emailPredicate);
+            }
+        };
+    }
 }

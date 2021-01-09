@@ -1,5 +1,6 @@
 package com.innospeech.customManager.service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -53,6 +54,11 @@ public class BoardService {
 		
 		public void save(Board board) {
 			repository.save(board);
+		}
+		
+		//jpql 테스트
+		public List<Board> testjpql() {
+			return repository.findAllTestJPQL();
 		}
 		
 		// 게시글 등록

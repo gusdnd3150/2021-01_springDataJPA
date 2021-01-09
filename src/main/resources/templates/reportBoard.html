@@ -45,7 +45,7 @@ fieldset {  position: relative;  display: inline-block;  padding: 0 0 0px;  bord
 			             <td th:text="${list.boardnum}"></td>
 			            <td th:text="${list.title}"></td>
 			            <td th:text="${list.user.name}"></td>
-			            <td th:text="${list.updateday}"></td>
+			            <td th:text="${#dates.format(list.updateday, 'yyyy-MM-dd')}"></td>
 			            <td th:text="${list.boardtype}"></td>
 			         </tr>
                </table>
@@ -93,7 +93,7 @@ fieldset {  position: relative;  display: inline-block;  padding: 0 0 0px;  bord
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <button type="button" class="close" data-dismiss="modal" onclick="resetForm()">&times;</button>
           <h4 class="modal-title">보고서 작성</h4>
         </div>
         <div class="modal-body">
@@ -101,7 +101,6 @@ fieldset {  position: relative;  display: inline-block;  padding: 0 0 0px;  bord
           <form action="" name="writeForm" id="writeForm">
                 <input type="hidden" name="id" th:if="${session.LOGIN}!=null" th:value="${session.LOGIN.id}">
                 <input type="hidden" name="id" th:if="${session.LOGIN}==null" value="empty">
-                <input type="hidden" name="updateday" th:value="${#calendars.format(#calendars.createNow(),'yyyy-mm-dd')}"> 
                 
 						<div class="mb-3">
 							<label class="form-label">제목</label> 
@@ -122,7 +121,7 @@ fieldset {  position: relative;  display: inline-block;  padding: 0 0 0px;  bord
 
         </div>
         <div class="modal-footer">      
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" onclick="resetForm();">Close</button>
           <button type="button" class="btn btn-default" onclick="checkForm(event)">submit</button>
         </div>
       </div>
@@ -140,6 +139,7 @@ fieldset {  position: relative;  display: inline-block;  padding: 0 0 0px;  bord
 <script>
 
 
+
 var editor;
 window.onload = function() {
 	editor =CKEDITOR.replace('modeEditor',{
@@ -150,6 +150,12 @@ window.onload = function() {
     });
 };
 
+//모달창 닫을 때 폼값 초기화
+function resetForm(){
+	var form = document.writeForm;
+	form.title.value="";
+	CKEDITOR.instances.modeEditor.setData(""); // ck에디터 값
+}
 
 
 
@@ -192,5 +198,7 @@ window.onload = function() {
 		});
 		return;
 	}
+	
+	
 </script>
 </html>

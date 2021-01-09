@@ -1,6 +1,7 @@
 package com.innospeech.customManager.controller;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -78,15 +79,16 @@ public class WebController {
 		model.addAttribute("maxPage", 6);
 		return "reportBoard";
 	}
-	
+	 
 	//메인화면
 	@GetMapping("/main.do")
-	public String view(Model model,
+	public String view(Model model, 
 			@RequestParam(value="page",defaultValue="0") int page,
 			@RequestParam(value="size",defaultValue="3") int size) {
 		//BoardDTO dto= new BoardDTO();
 		
 		Page<Board> list = service.list(PageRequest.of(page, size));
+		
 		// board ,user 조인결과 + 페이징
 		model.addAttribute("reportList", list);
 		model.addAttribute("maxPage", 2);
@@ -111,9 +113,6 @@ public class WebController {
 	@PostMapping("/insertBoard")
 	@ResponseBody
 	public String insert(Model model,BoardDTO boardDTO) {
-		/*
-		 * Calendar cal = Calendar.getInstance(); cal.to
-		 */
 		String result= "";
 	    try {
 	    	result =service.writeBoard(boardDTO);

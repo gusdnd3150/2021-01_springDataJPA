@@ -48,11 +48,11 @@ public class Board {
 	public Board() {};
 	
     public static Board createBoard(Users user, BoardDTO dto) {
-
     	Board board = new Board();
     	board.setBoardtype(dto.getBoardtype());
     	board.setContent(dto.getContent());
     	board.setTitle(dto.getTitle());
+    	board.setUpdateday(new Date());
     	board.setUser(user);
         
         return board;
